@@ -17,6 +17,6 @@ public class MissingModsWarning {
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 
     public static void init() {
-        
+
     }
 }
