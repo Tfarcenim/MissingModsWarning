@@ -3,6 +3,7 @@ package tfar.missingmodswarning.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.storage.LevelSummary;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tfar.missingmodswarning.MissingModsSummary;
@@ -20,6 +21,8 @@ public class MissingModsWarningForgeClient {
             boolean flag = j < 32;
             int k = flag ? 32 : 0;
 
+            pGuiGraphics.blit(ICON_OVERLAY_LOCATION, pLeft, pTop, 32.0F, (float)k, 32, 32, 256, 256);
+
             pGuiGraphics.blit(ICON_OVERLAY_LOCATION, pLeft, pTop, 96.0F, (float)k, 32, 32, 256, 256);
 
             if (flag) {
@@ -27,6 +30,10 @@ public class MissingModsWarningForgeClient {
             }
             ci.cancel();
         }
+    }
+
+    public static void showMissingModWarning(MissingModsSummary missingModsSummary) {
+        Minecraft.getInstance().setScreen(new MissingModsWarningScreen(Minecraft.getInstance().screen, Component.empty(),missingModsSummary));
     }
 
 }

@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tfar.missingmodswarning.MissingModsSummary;
 import tfar.missingmodswarning.client.MissingModsWarningForgeClient;
 
 @Mixin(WorldSelectionList.WorldListEntry.class)
@@ -26,5 +27,13 @@ public class WorldSelectionListMixin {
     @Inject(method = "render",at = @At(value = "INVOKE",target = "Lnet/minecraft/world/level/storage/LevelSummary;isLocked()Z"),cancellable = true)
     private void showModWarning(GuiGraphics pGuiGraphics, int pIndex, int pTop, int pLeft, int pWidth, int pHeight, int pMouseX, int pMouseY, boolean pHovering, float pPartialTick, CallbackInfo ci) {
         MissingModsWarningForgeClient.levelHook(pGuiGraphics, pIndex, pTop, pLeft, pWidth, pHeight, pMouseX, pMouseY, pHovering, pPartialTick, ci,summary,minecraft,screen);
+    }
+
+    @Inject(method = "joinWorld",at = @At(value = "INVOKE",target = "Lnet/minecraft/world/level/storage/LevelSummary;askToOpenWorld()Z"),cancellable = true)
+    private void customScreen(CallbackInfo ci) {
+        if (summary instanceof MissingModsSummary missingModsSummary) {
+            MissingModsWarningForgeClient.showMissingModWarning(missingModsSummary);
+            ci.cancel();
+        }
     }
 }
