@@ -65,17 +65,12 @@ public class SimpleModListWidget extends ObjectSelectionList<SimpleModListWidget
         @Override
         public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
             Component name = Component.literal(simpleModInfo.modid);
+            Component mOldversion = Component.literal(simpleModInfo.oldVersion);
             Component mversion = Component.literal(simpleModInfo.version);
             Font font = Minecraft.getInstance().font;
             guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))), left + 3, top + 2, 0xFFFFFF, false);
-            guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(mversion, listWidth))), left + 3, top + 2 + font.lineHeight, 0xCCCCCC, false);
-            if (true) {
-                //TODO: Consider adding more icons for visualization
-                RenderSystem.setShaderColor(1, 1, 1, 1);
-                guiGraphics.pose().pushPose();
-          //      guiGraphics.blit(VERSION_CHECK_ICONS, getLeft() + width - 12, top + entryHeight / 4, vercheck.status().getSheetOffset() * 8, (vercheck.status().isAnimated() && ((System.currentTimeMillis() / 800 & 1)) == 1) ? 8 : 0, 8, 8, 64, 16);
-                guiGraphics.pose().popPose();
-            }
+            guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(mOldversion, listWidth))), left + 3 + width / 2, top + 2, 0xCCCCCC, false);
+            guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(mversion, listWidth))), left + 3 + width * 3 / 4, top + 2, 0xCCCCCC, false);
         }
 
         @Override

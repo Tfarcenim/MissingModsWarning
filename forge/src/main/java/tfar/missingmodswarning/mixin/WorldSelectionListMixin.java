@@ -32,7 +32,7 @@ public class WorldSelectionListMixin {
     @Inject(method = "joinWorld",at = @At(value = "INVOKE",target = "Lnet/minecraft/world/level/storage/LevelSummary;askToOpenWorld()Z"),cancellable = true)
     private void customScreen(CallbackInfo ci) {
         if (summary instanceof MissingModsSummary missingModsSummary) {
-            MissingModsWarningForgeClient.showMissingModWarning(missingModsSummary);
+            MissingModsWarningForgeClient.showMissingModWarning(missingModsSummary,(WorldSelectionList.WorldListEntry)(Object)this);
             ci.cancel();
         }
     }

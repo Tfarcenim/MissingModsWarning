@@ -6,13 +6,18 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
+import net.minecraft.client.gui.screens.worldselection.WorldSelectionList;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeI18n;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLPaths;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import tfar.missingmodswarning.MissingModsSummary;
+import tfar.missingmodswarning.ModComponents;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -24,17 +29,19 @@ public class MissingModsWarningScreen  extends Screen
     private MultiLineLabel message = MultiLineLabel.EMPTY;
     private final Screen parent;
     private final MissingModsSummary missingModsSummary;
+    private final WorldSelectionList.WorldListEntry entry;
     private int textHeight;
     private final Path modsDir;
     int listHeight = 9;
     protected SimpleModListWidget list;
     protected List<SimpleModInfo> simpleModInfoList = new ArrayList<>();
 
-    public MissingModsWarningScreen(Screen parentScreen, Component title, MissingModsSummary missingModsSummary)
+    public MissingModsWarningScreen(Screen parentScreen, Component title, MissingModsSummary missingModsSummary, WorldSelectionList.WorldListEntry entry)
     {
         super(title);
         this.parent = parentScreen;
         this.missingModsSummary = missingModsSummary;
+        this.entry = entry;
         this.modsDir = FMLPaths.MODSDIR.get();
         buildModInfo();
     }
@@ -50,30 +57,31 @@ public class MissingModsWarningScreen  extends Screen
 
     @Override
     protected void init() {
-        message = MultiLineLabel.create(font,Component.literal("Missing mods in world").withStyle(ChatFormatting.GOLD),width /2);
+        message = MultiLineLabel.create(font,ModComponents.WORLD_MISSING_MODS,width /2);
         int listLeft = Math.max(8, this.width / 2 - 220);
         int listWidth = Math.min(440, this.width - 16);
         int margin = 52;
         int upperButtonHeight = height - margin + 6;
         int lowerButtonHeight = height - margin + 30;
 
-        this.list = new SimpleModListWidget(this, this.width, margin, height - margin);
+        this.list = new SimpleModListWidget(this, this.width, margin +16, height - margin);
 
 
         int buttonWidth = Math.min(210, this.width / 2 - 20);
-        this.addRenderableWidget(Button.builder(Component.literal("load anyway"), this::loadAnyway)
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_PROCEED, this::loadAnyway)
                 .bounds(Math.max(this.width / 4 - buttonWidth / 2, listLeft), upperButtonHeight, buttonWidth, 20)
                 .build());
-        this.addRenderableWidget(Button.builder(Component.literal(ForgeI18n.parseMessage("fml.button.open.mods.folder")), button -> Util.getPlatform().openFile(modsDir.toFile()))
+        this.addRenderableWidget(Button.builder(Component.translatable("fml.button.open.mods.folder"), button -> Util.getPlatform().openFile(modsDir.toFile()))
                 .bounds(Math.min(this.width * 3 / 4 - buttonWidth / 2, listLeft + listWidth - buttonWidth), upperButtonHeight, buttonWidth, 20)
                 .build());
-        this.addRenderableWidget(Button.builder(Component.translatable("gui.toMenu"), button -> this.minecraft.setScreen(this.parent))
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_TO_TITLE, button -> this.minecraft.setScreen(this.parent))
                 .bounds((this.width - buttonWidth) / 2, lowerButtonHeight, buttonWidth, 20)
                 .build());
     }
 
     void loadAnyway(Button b) {
-
+        minecraft.setScreen(parent);
+        entry.loadWorld();
     }
 
     public static class SimpleModInfo {
@@ -94,7 +102,17 @@ public class MissingModsWarningScreen  extends Screen
         this.list.render(guiGraphics, mouseX, mouseY, partialTicks);
         int textYOffset = 18;//modMismatchData.containsMismatches() ? 18 : 0;
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, (this.height - this.listHeight - this.textHeight) / 2 - textYOffset - 9 * 2, 0xAAAAAA);
-        this.message.renderCentered(guiGraphics, this.width / 2, height );
+
+        Component modidC = Component.translatable("Modid").withStyle(ChatFormatting.UNDERLINE);
+        Component versionC = Component.translatable("fml.modmismatchscreen.table.youhave").withStyle(ChatFormatting.UNDERLINE);
+
+        guiGraphics.drawString(font,modidC,10,50,0xffffff);
+        guiGraphics.drawString(font, ModComponents.SAVED_WITH,width/2,50,0xffffff);
+        guiGraphics.drawString(font,versionC, (int) (width* .75),50,0xffffff);
+
+        this.message.renderCentered(guiGraphics, this.width / 2, 20,30,0xff00ff);
+
+
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }
