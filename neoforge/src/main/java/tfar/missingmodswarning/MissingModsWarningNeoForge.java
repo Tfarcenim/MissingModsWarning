@@ -1,5 +1,6 @@
 package tfar.missingmodswarning;
 
+import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -28,10 +29,10 @@ public class MissingModsWarningNeoForge {
         MissingModsWarning.init();
     }
 
-    public static void checkForIssues(CallbackInfoReturnable<LevelSummary> cir, CompoundTag var6) {
+    public static void checkForIssues(CallbackInfoReturnable<LevelSummary> cir, CompoundTag extra) {
         LevelSummary original = cir.getReturnValue();
         if (original.getClass() == LevelSummary.class) {
-            CompoundTag fmlTag = var6.getCompound("fml");
+            CompoundTag fmlTag = extra.getCompound("fml");
             ListTag modList = fmlTag.getList("LoadingModList", net.minecraft.nbt.Tag.TAG_COMPOUND);
             Map<String, ArtifactVersion> missing = new HashMap<>(modList.size());
             Map<String, ArtifactVersion> mismatched = new HashMap<>(modList.size());

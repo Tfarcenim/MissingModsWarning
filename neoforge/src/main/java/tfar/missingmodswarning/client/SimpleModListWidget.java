@@ -16,7 +16,7 @@ public class SimpleModListWidget extends ObjectSelectionList<SimpleModListWidget
     private MissingModsWarningScreen parent;
 
     public SimpleModListWidget(MissingModsWarningScreen parent, int listWidth, int top, int bottom) {
-        super(Minecraft.getInstance(), listWidth, parent.height, top, bottom, 10);
+        super(Minecraft.getInstance(), listWidth, parent.height, top, bottom);
         this.parent = parent;
         this.listWidth = listWidth;
         this.refreshList();
@@ -43,10 +43,10 @@ public class SimpleModListWidget extends ObjectSelectionList<SimpleModListWidget
         }
     }
 
-    @Override
-    protected void renderBackground(GuiGraphics guiGraphics) {
-        this.parent.renderBackground(guiGraphics);
-    }
+   // @Override
+  //  protected void renderBackground(GuiGraphics guiGraphics) {
+   //     this.parent.renderBackground(guiGraphics);
+   // }
 
     public class SimpleModEntry extends ObjectSelectionList.Entry<SimpleModEntry> {
         private final MissingModsWarningScreen.SimpleModInfo simpleModInfo;

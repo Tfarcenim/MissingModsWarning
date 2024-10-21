@@ -8,6 +8,7 @@
     "LevelStorageSourceMixin"
   ],
   "client": [
+    "WorldOpenFlowsMixin",
     "WorldSelectionListMixin"
   ],
   "server": [

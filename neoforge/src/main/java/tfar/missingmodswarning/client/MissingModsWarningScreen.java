@@ -6,15 +6,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
-import net.minecraft.client.gui.screens.worldselection.WorldSelectionList;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.ForgeI18n;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLPaths;
-import org.apache.commons.lang3.tuple.Pair;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLPaths;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import tfar.missingmodswarning.MissingModsSummary;
 import tfar.missingmodswarning.ModComponents;
@@ -29,19 +25,19 @@ public class MissingModsWarningScreen  extends Screen
     private MultiLineLabel message = MultiLineLabel.EMPTY;
     private final Screen parent;
     private final MissingModsSummary missingModsSummary;
-    private final WorldSelectionList.WorldListEntry entry;
+    private final Runnable openAnyway;
     private int textHeight;
     private final Path modsDir;
     int listHeight = 9;
     protected SimpleModListWidget list;
     protected List<SimpleModInfo> simpleModInfoList = new ArrayList<>();
 
-    public MissingModsWarningScreen(Screen parentScreen, Component title, MissingModsSummary missingModsSummary, WorldSelectionList.WorldListEntry entry)
+    public MissingModsWarningScreen(Screen parentScreen, Component title, MissingModsSummary missingModsSummary, Runnable openAnyway)
     {
         super(title);
         this.parent = parentScreen;
         this.missingModsSummary = missingModsSummary;
-        this.entry = entry;
+        this.openAnyway = openAnyway;
         this.modsDir = FMLPaths.MODSDIR.get();
         buildModInfo();
     }
@@ -80,8 +76,7 @@ public class MissingModsWarningScreen  extends Screen
     }
 
     void loadAnyway(Button b) {
-        minecraft.setScreen(parent);
-        entry.loadWorld();
+        openAnyway.run();
     }
 
     public static class SimpleModInfo {
@@ -98,7 +93,7 @@ public class MissingModsWarningScreen  extends Screen
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         this.list.render(guiGraphics, mouseX, mouseY, partialTicks);
         int textYOffset = 18;//modMismatchData.containsMismatches() ? 18 : 0;
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, (this.height - this.listHeight - this.textHeight) / 2 - textYOffset - 9 * 2, 0xAAAAAA);
@@ -113,6 +108,6 @@ public class MissingModsWarningScreen  extends Screen
         this.message.renderCentered(guiGraphics, this.width / 2, 20,30,0xff00ff);
 
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
     }
 }

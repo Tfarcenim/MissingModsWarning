@@ -30,11 +30,11 @@ public class WorldSelectionListMixin {
         MissingModsWarningForgeClient.levelHook(pGuiGraphics, pIndex, pTop, pLeft, pWidth, pHeight, pMouseX, pMouseY, pHovering, pPartialTick, ci,summary,minecraft,screen);
     }
 
-    @Inject(method = "joinWorld",at = @At(value = "INVOKE",target = "Lnet/minecraft/world/level/storage/LevelSummary;askToOpenWorld()Z"),cancellable = true)
+   /* @Inject(method = "joinWorld",at = @At(value = "INVOKE",target = "Lnet/minecraft/world/level/storage/LevelSummary;askToOpenWorld()Z"),cancellable = true)
     private void customScreen(CallbackInfo ci) {
         if (summary instanceof MissingModsSummary missingModsSummary) {
             MissingModsWarningForgeClient.showMissingModWarning(missingModsSummary,(WorldSelectionList.WorldListEntry)(Object)this);
             ci.cancel();
         }
-    }
+    }*/
 }
