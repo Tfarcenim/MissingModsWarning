@@ -3,10 +3,10 @@ package tfar.missingmodswarning.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldSelectionList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.LevelSummary;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tfar.missingmodswarning.MissingModsSummary;
@@ -26,11 +26,6 @@ public class MissingModsWarningForgeClient {
 
             pGuiGraphics.blitSprite(resourcelocation1, pLeft, pTop, 32, 32);
 
-
-          //  pGuiGraphics.blit(MissingModsWarningNeoForge.ICON_OVERLAY_LOCATION, pLeft, pTop, 32.0F, (float)k, 32, 32, 256, 256);
-
-          //  pGuiGraphics.blit(MissingModsWarningNeoForge.ICON_OVERLAY_LOCATION, pLeft, pTop, 96.0F, (float)k, 32, 32, 256, 256);
-
             if (flag) {
                 screen.setTooltipForNextRenderPass(minecraft.font.split(ModComponents.WORLD_MISSING_MODS_TOOLTIP, 175));
             }
@@ -38,8 +33,8 @@ public class MissingModsWarningForgeClient {
         }
     }
 
-    public static void showMissingModWarning(MissingModsSummary missingModsSummary,Runnable openAnyway) {
-        Minecraft.getInstance().setScreen(new MissingModsWarningScreen(Minecraft.getInstance().screen, Component.empty(), missingModsSummary,openAnyway));
+    public static void showMissingModWarning(LevelStorageSource.LevelStorageAccess pLevelStorage, Runnable pOnFail, MissingModsSummary missingModsSummary, Runnable openAnyway) {
+        Minecraft.getInstance().setScreen(new MissingModsWarningScreen(pLevelStorage,pOnFail, Component.empty(), missingModsSummary,openAnyway));
     }
 
 }

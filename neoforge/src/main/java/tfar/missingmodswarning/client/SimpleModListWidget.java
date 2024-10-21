@@ -1,6 +1,5 @@
 package tfar.missingmodswarning.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,8 +14,8 @@ public class SimpleModListWidget extends ObjectSelectionList<SimpleModListWidget
 
     private MissingModsWarningScreen parent;
 
-    public SimpleModListWidget(MissingModsWarningScreen parent, int listWidth, int top, int bottom) {
-        super(Minecraft.getInstance(), listWidth, parent.height, top, bottom);
+    public SimpleModListWidget(MissingModsWarningScreen parent, int listWidth) {
+        super(parent.getMinecraft(), listWidth, parent.height - 120, 68, 18);//y,itemheight
         this.parent = parent;
         this.listWidth = listWidth;
         this.refreshList();

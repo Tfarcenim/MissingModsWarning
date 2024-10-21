@@ -20,7 +20,7 @@ public abstract class WorldOpenFlowsMixin {
     ,cancellable = true)
     private void showMissingModsScreen(LevelStorageSource.LevelStorageAccess pLevelStorage, LevelSummary pLevelSummary, Dynamic<?> pLevelData, Runnable pOnFail, CallbackInfo ci) {
         if (pLevelSummary instanceof MissingModsSummary missingModsSummary) {
-            MissingModsWarningForgeClient.showMissingModWarning(missingModsSummary,() -> this.openWorldLoadLevelStem(pLevelStorage,pLevelData,false,pOnFail));
+            MissingModsWarningForgeClient.showMissingModWarning(pLevelStorage,pOnFail,missingModsSummary,() -> this.openWorldLoadLevelStem(pLevelStorage,pLevelData,false,pOnFail));
             ci.cancel();
         }
     }

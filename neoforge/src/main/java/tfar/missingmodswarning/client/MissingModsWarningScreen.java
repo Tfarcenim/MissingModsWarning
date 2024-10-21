@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.LevelStorageSource;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
@@ -20,10 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MissingModsWarningScreen  extends Screen
-{
+/**
+ * see LoadingErrorScreen
+ */
+public class MissingModsWarningScreen extends Screen {
     private MultiLineLabel message = MultiLineLabel.EMPTY;
-    private final Screen parent;
+    private final LevelStorageSource.LevelStorageAccess pLevelStorage;
+    private final Runnable pOnFail;
     private final MissingModsSummary missingModsSummary;
     private final Runnable openAnyway;
     private int textHeight;
@@ -32,10 +36,11 @@ public class MissingModsWarningScreen  extends Screen
     protected SimpleModListWidget list;
     protected List<SimpleModInfo> simpleModInfoList = new ArrayList<>();
 
-    public MissingModsWarningScreen(Screen parentScreen, Component title, MissingModsSummary missingModsSummary, Runnable openAnyway)
+    public MissingModsWarningScreen(LevelStorageSource.LevelStorageAccess pLevelStorage, Runnable pOnFail, Component title, MissingModsSummary missingModsSummary, Runnable openAnyway)
     {
         super(title);
-        this.parent = parentScreen;
+        this.pLevelStorage = pLevelStorage;
+        this.pOnFail = pOnFail;
         this.missingModsSummary = missingModsSummary;
         this.openAnyway = openAnyway;
         this.modsDir = FMLPaths.MODSDIR.get();
@@ -56,22 +61,24 @@ public class MissingModsWarningScreen  extends Screen
         message = MultiLineLabel.create(font,ModComponents.WORLD_MISSING_MODS,width /2);
         int listLeft = Math.max(8, this.width / 2 - 220);
         int listWidth = Math.min(440, this.width - 16);
-        int margin = 52;
+        int margin = 44;
         int upperButtonHeight = height - margin + 6;
-        int lowerButtonHeight = height - margin + 30;
 
-        this.list = new SimpleModListWidget(this, this.width, margin +16, height - margin);
+        this.list = new SimpleModListWidget(this, this.width);
 
 
-        int buttonWidth = Math.min(210, this.width / 2 - 20);
+        int buttonWidth = Math.min(135, this.width / 3 - 20);
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_PROCEED, this::loadAnyway)
-                .bounds(Math.max(this.width / 4 - buttonWidth / 2, listLeft), upperButtonHeight, buttonWidth, 20)
+                .bounds((int) Math.max(this.width  * .20 - buttonWidth / 2, listLeft), upperButtonHeight, buttonWidth, 20)
                 .build());
         this.addRenderableWidget(Button.builder(Component.translatable("fml.button.open.mods.folder"), button -> Util.getPlatform().openFile(modsDir.toFile()))
-                .bounds(Math.min(this.width * 3 / 4 - buttonWidth / 2, listLeft + listWidth - buttonWidth), upperButtonHeight, buttonWidth, 20)
+                .bounds((int) Math.min(this.width * .80 - buttonWidth / 2, listLeft + listWidth - buttonWidth), upperButtonHeight, buttonWidth, 20)
                 .build());
-        this.addRenderableWidget(Button.builder(CommonComponents.GUI_TO_TITLE, button -> this.minecraft.setScreen(this.parent))
-                .bounds((this.width - buttonWidth) / 2, lowerButtonHeight, buttonWidth, 20)
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_TO_TITLE, button -> {
+                    pLevelStorage.safeClose();
+                    pOnFail.run();
+                })
+                .bounds((this.width - buttonWidth) / 2, upperButtonHeight, buttonWidth, 20)
                 .build());
     }
 
@@ -92,6 +99,11 @@ public class MissingModsWarningScreen  extends Screen
     }
 
     @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         this.list.render(guiGraphics, mouseX, mouseY, partialTicks);
@@ -107,7 +119,6 @@ public class MissingModsWarningScreen  extends Screen
 
         this.message.renderCentered(guiGraphics, this.width / 2, 20,30,0xff00ff);
 
-
-
+        this.renderables.forEach(button -> button.render(guiGraphics, mouseX, mouseY, partialTicks));
     }
 }
