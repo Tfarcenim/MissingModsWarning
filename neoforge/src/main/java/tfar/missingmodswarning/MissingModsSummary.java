@@ -25,9 +25,4 @@ public class MissingModsSummary extends LevelSummary {
     public Map<String, ArtifactVersion> getMismatched() {
         return mismatched;
     }
-
-    @Override
-    public boolean askToOpenWorld() {
-        return true;
-    }
 }

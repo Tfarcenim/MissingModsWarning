@@ -2,7 +2,7 @@ package tfar.missingmodswarning;
 
 import net.fabricmc.api.ModInitializer;
 
-public class ExampleMod implements ModInitializer {
+public class MissingModsWarningFabric implements ModInitializer {
     
     @Override
     public void onInitialize() {

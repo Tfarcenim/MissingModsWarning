@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tfar.missingmodswarning.MissingModsSummary;
 import tfar.missingmodswarning.ModComponents;
 
-import static tfar.missingmodswarning.MissingModsWarningForge.ICON_OVERLAY_LOCATION;
+import static tfar.missingmodswarning.MissingModsWarningNeoForge.ICON_OVERLAY_LOCATION;
 
 public class MissingModsWarningForgeClient {
 

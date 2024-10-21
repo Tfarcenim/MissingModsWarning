@@ -1,7 +1,7 @@
 package tfar.missingmodswarning.datagen;
 
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import tfar.missingmodswarning.MissingModsWarning;
 import tfar.missingmodswarning.ModComponents;
 

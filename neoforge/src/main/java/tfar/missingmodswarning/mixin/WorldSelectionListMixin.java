@@ -18,7 +18,8 @@ import tfar.missingmodswarning.client.MissingModsWarningForgeClient;
 public class WorldSelectionListMixin {
 
 
-    @Shadow @Final private LevelSummary summary;
+    @Shadow @Final
+    LevelSummary summary;
 
     @Shadow @Final private Minecraft minecraft;
 
